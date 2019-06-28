@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# Smart-Wallpaper CONFIG
-# Variables for your wallpaper collection
-# It can be a folder (e.g /home/user/wallpapers/*) or a file (/home/user/wallpapers/wallpaper.jpg)
-
-daytimewallpaper=~/Images/wave.jpg
-nightimewallpaper=~/Images/city.jpg
