@@ -1,7 +1,6 @@
 #!/bin/bash
 
-daytimewallpaper=~/Images/wave.jpg
-nightimewallpaper=~/Images/city.jpg
+source ~/.config/smart-wallpaper/config
 
 while true
 do
@@ -10,19 +9,15 @@ do
     string=$(redshift -l $(cat /usr/share/geolocate/.location) -p)
     if [[ $string == *"Daytime"* ]]; then
       feh --randomize --bg-fill $daytimewallpaper
-      echo "geolocate found. DAYTIME"
     else
       feh --randomize --bg-fill $nightimewallpaper
-      echo "geolocate found. NIGHTTIME"
     fi
   else
     string=$(redshift -p)
     if [[ $string == *"Daytime"* ]]; then
       feh --randomize --bg-fill $daytimewallpaper
-      echo "geolocate NOT found. DAYTIME"
     else
       feh --randomize --bg-fill $nightimewallpaper
-      echo "geolocate NOT found. NIGHTTIME"
     fi
   fi
 
