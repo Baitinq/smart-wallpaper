@@ -17,16 +17,18 @@ print_usage() {
 
 if (( $# == 0 )); then
     print_usage
+    exit 1
 fi
 
 while getopts 'd:n:l:h' flag; do
   case "${flag}" in
-    d) input_daytimewallpaper="${OPTARG}";;
-    n) input_nighttimewallpaper="${OPTARG}";;
-    l) location="${OPTARG}";;
-    h) print_usage                ;;
+    d) input_daytimewallpaper="${OPTARG}"    ;;
+    n) input_nighttimewallpaper="${OPTARG}"  ;;
+    l) location="${OPTARG}"                  ;;
+    h) print_usage
+       exit 0                                ;;
     *) print_usage
-       exit 1                     ;;
+       exit 1                                ;;
   esac
 done
 
@@ -62,5 +64,5 @@ do
     fi
   fi
 
-  sleep 500
+  sleep 500s
 done
