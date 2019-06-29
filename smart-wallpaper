@@ -19,6 +19,7 @@ set_wallpaper() {
   if [[ $1 == *".gif" ]] && [ -f /usr/bin/gifview ]; then
     gifview --animate -w root $1
   else
+    #killall gifview# every 500h secs its settings the wallpaper but is it necessary (check if gifview proc?)
     feh --bg-fill $1
   fi
 }
@@ -58,18 +59,22 @@ do
 
   if [ "$location" != "" ]; then
     string=$(redshift -l $location -p)
-    if [[ $string == *"Daytime"* ]]; then
+    shopt -s nocasematch
+    if [[ $string == *"day"* ]]; then
       set_wallpaper "$daytimewallpaper"
     else
       set_wallpaper "$nighttimewallpaper"
     fi
+    shopt -u nocasematch
   else
     string=$(redshift -p)
-    if [[ $string == *"Daytime"* ]]; then
+    shopt -s nocasematch
+    if [[ $string == *"day"* ]]; then
       set_wallpaper "$daytimewallpaper"
     else
       set_wallpaper "$nighttimewallpaper"
     fi
+    shopt -u nocasematch
   fi
 
   sleep 500s
