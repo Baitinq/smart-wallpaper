@@ -16,7 +16,7 @@ print_usage() {
 }
 
 set_wallpaper() {
-  if [[ $1 == *".gif" ]]; then
+  if [[ $1 == *".gif" ]] && [ -f /usr/bin/gifview ]; then
     gifview --animate -w root $1
   else
     feh --bg-fill $1
