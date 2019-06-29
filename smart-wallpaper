@@ -1,23 +1,64 @@
 #!/bin/bash
 
-source ~/.config/smart-wallpaper/config
+input_daytimewallpaper=''
+input_nighttimewallpaper=''
+daytimewallpaper=''
+nighttimewallpaper=''
+location=''
+
+print_usage() {
+  echo "Usage: smart-wallpaper [FLAG]"
+  echo "  Flags:"
+  echo "    [-d]: NEEDED   : daytime wallpaper file/folder"
+  echo "    [-n]: NEEDED   : nighttime wallpaper file/folder"
+  echo "    [-l]: OPTIONAL : manual location, if not added geoclue gets the location (requires internet)"
+  echo "    [-h]: OPTIONAL : print help message"
+}
+
+if (( $# == 0 )); then
+    print_usage
+fi
+
+while getopts 'd:n:l:h' flag; do
+  case "${flag}" in
+    d) input_daytimewallpaper="${OPTARG}";;
+    n) input_nighttimewallpaper="${OPTARG}";;
+    l) location="${OPTARG}";;
+    h) print_usage                ;;
+    *) print_usage
+       exit 1                     ;;
+  esac
+done
+
+if [ "$input_daytimewallpaper" == "" ]; then
+  print_usage
+  exit 1
+fi
+
+if [ "$input_nighttimewallpaper" == "" ]; then
+  print_usage
+  exit 1
+fi
+
+daytimewallpaper=$(find $input_daytimewallpaper -type f | shuf -n 1)
+nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
 
 while true
 do
 
-  if [ -f /usr/share/geolocate/.location ]; then
-    string=$(redshift -l $(cat /usr/share/geolocate/.location) -p)
+  if [ "$location" != "" ]; then
+    string=$(redshift -l $location -p)
     if [[ $string == *"Daytime"* ]]; then
-      feh --randomize --bg-fill $daytimewallpaper
+      feh --bg-fill $daytimewallpaper
     else
-      feh --randomize --bg-fill $nightimewallpaper
+      feh --bg-fill $nighttimewallpaper
     fi
   else
     string=$(redshift -p)
     if [[ $string == *"Daytime"* ]]; then
-      feh --randomize --bg-fill $daytimewallpaper
+      feh --bg-fill $daytimewallpaper
     else
-      feh --randomize --bg-fill $nightimewallpaper
+      feh --bg-fill $nighttimewallpaper
     fi
   fi
 
