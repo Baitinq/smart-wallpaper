@@ -16,10 +16,11 @@ print_usage() {
 }
 
 set_wallpaper() {
-  #if [[ $1 == *".gif" ]]; then
-  #  mplayer
-  #else
+  if [[ $1 == *".gif" ]]; then
+    gifview --animate -w root $1
+  else
     feh --bg-fill $1
+  fi
 }
 
 if (( $# == 0 )); then
