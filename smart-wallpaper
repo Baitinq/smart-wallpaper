@@ -15,6 +15,13 @@ print_usage() {
   echo "    [-h]: OPTIONAL : print help message"
 }
 
+set_wallpaper() {
+  #if [[ $1 == *".gif" ]]; then
+  #  mplayer
+  #else
+    feh --bg-fill $1
+}
+
 if (( $# == 0 )); then
     print_usage
     exit 1
@@ -51,16 +58,16 @@ do
   if [ "$location" != "" ]; then
     string=$(redshift -l $location -p)
     if [[ $string == *"Daytime"* ]]; then
-      feh --bg-fill $daytimewallpaper
+      set_wallpaper "$daytimewallpaper"
     else
-      feh --bg-fill $nighttimewallpaper
+      set_wallpaper "$nighttimewallpaper"
     fi
   else
     string=$(redshift -p)
     if [[ $string == *"Daytime"* ]]; then
-      feh --bg-fill $daytimewallpaper
+      set_wallpaper "$daytimewallpaper"
     else
-      feh --bg-fill $nighttimewallpaper
+      set_wallpaper "$nighttimewallpaper"
     fi
   fi
 
