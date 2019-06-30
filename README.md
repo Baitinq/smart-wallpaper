@@ -16,11 +16,11 @@ Optional: gifsicle - animated wallpaper support
 
 ### Usage
 
-Usage: smart-wallpaper [FLAG]\n
-  Flags:\n
-    [-d]: NEEDED   : daytime wallpaper file/folder\n
-    [-n]: NEEDED   : nighttime wallpaper file/folder\n
-    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)\n
+Usage: smart-wallpaper [FLAG]<br />
+  Flags:<br />
+    [-d]: NEEDED   : daytime wallpaper file/folder<br />
+    [-n]: NEEDED   : nighttime wallpaper file/folder<br />
+    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)<br />
     [-h]: OPTIONAL : print help message
 
 Example:
