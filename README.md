@@ -37,8 +37,6 @@ Feel free to submit pull requests to clean up the code/adding new features. Than
 
 * **Baitinq** - *Whole script* - (https://github.com/Baitinq)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
 ## License
 
 This project is licensed under the GPL License.
