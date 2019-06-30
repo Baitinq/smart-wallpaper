@@ -92,11 +92,8 @@ do
   checktime
 
   if [ $timebool == true ]; then
-    echo "same"
-    #:
+     :
   else
-    echo "diifferent"
-    echo $currenttime
     if [ "$location" != "" ]; then
       if redshift -l $location -p | grep -i -q "day"; then
         currenttime="day"
@@ -115,7 +112,6 @@ do
       fi
     fi
   fi
-    echo $currenttime
 
   sleep 500s
 done
