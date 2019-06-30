@@ -16,21 +16,17 @@ Optional: gifsicle - animated wallpaper support
 
 ### Usage
 
-A step by step series of examples that tell you how to get a development env running
+Usage: smart-wallpaper [FLAG]
+  Flags:
+    [-d]: NEEDED   : daytime wallpaper file/folder
+    [-n]: NEEDED   : nighttime wallpaper file/folder
+    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)
+    [-h]: OPTIONAL : print help message
 
-Say what the step will be
-
+Example:
 ```
-Give the example
+smart-wallpaper -d /home/user/Wallpapers/DayWallpaperFolder -n /home/user/Wallpapers/NightWallpaperFolder -l 0:0
 ```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Contributing
 

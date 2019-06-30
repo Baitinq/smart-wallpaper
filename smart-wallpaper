@@ -22,7 +22,7 @@ print_usage() {
   echo "  Flags:"
   echo "    [-d]: NEEDED   : daytime wallpaper file/folder"
   echo "    [-n]: NEEDED   : nighttime wallpaper file/folder"
-  echo "    [-l]: OPTIONAL : manual location, if not added geoclue gets the location (requires internet)"
+  echo "    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)"
   echo "    [-h]: OPTIONAL : print help message"
 }
 
