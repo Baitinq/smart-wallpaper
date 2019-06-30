@@ -1,10 +1,21 @@
 #!/bin/bash
 
+trap cleanup EXIT
+
 input_daytimewallpaper=''
 input_nighttimewallpaper=''
 daytimewallpaper=''
 nighttimewallpaper=''
 location=''
+
+currenttime='pn5Lf1f8SH' #random string so the first loop works
+timebool=false
+
+cleanup() {
+  if [[ $(pidof gifview | wc -l) == 1 ]]; then
+    kill $(pidof gifview)
+  fi
+}
 
 print_usage() {
   echo "Usage: smart-wallpaper [FLAG]"
@@ -16,11 +27,32 @@ print_usage() {
 }
 
 set_wallpaper() {
+
+  if [[ $(pidof gifview | wc -l) == 1 ]]; then
+    kill $(pidof gifview)
+  fi
+
   if [[ $1 == *".gif" ]] && [ -f /usr/bin/gifview ]; then
-    gifview --animate -w root $1
+    gifview --animate -w root $1 &
   else
-    #killall gifview# every 500h secs its settings the wallpaper but is it necessary (check if gifview proc?)
     feh --bg-fill $1
+  fi
+
+}
+
+checktime() {
+  if [ "$location" != "" ]; then
+    if redshift -l $location -p | grep -i -q "$currenttime"; then
+      timebool=true
+    else
+      timebool=false
+    fi
+  else
+    if redshift -p | grep -i -q "$currenttime"; then
+      timebool=true
+    else
+      timebool=false
+    fi
   fi
 }
 
@@ -57,25 +89,33 @@ nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
 while true
 do
 
-  if [ "$location" != "" ]; then
-    string=$(redshift -l $location -p)
-    shopt -s nocasematch
-    if [[ $string == *"day"* ]]; then
-      set_wallpaper "$daytimewallpaper"
-    else
-      set_wallpaper "$nighttimewallpaper"
-    fi
-    shopt -u nocasematch
+  checktime
+
+  if [ $timebool == true ]; then
+    echo "same"
+    #:
   else
-    string=$(redshift -p)
-    shopt -s nocasematch
-    if [[ $string == *"day"* ]]; then
-      set_wallpaper "$daytimewallpaper"
+    echo "diifferent"
+    echo $currenttime
+    if [ "$location" != "" ]; then
+      if redshift -l $location -p | grep -i -q "day"; then
+        currenttime="day"
+        set_wallpaper "$daytimewallpaper"
+      else
+        currenttime="night"
+        set_wallpaper "$nighttimewallpaper"
+      fi
     else
-      set_wallpaper "$nighttimewallpaper"
+      if redshift -p | grep -i -q "day"; then
+        currenttime="day"
+        set_wallpaper "$daytimewallpaper"
+      else
+        currenttime="night"
+        set_wallpaper "$nighttimewallpaper"
+      fi
     fi
-    shopt -u nocasematch
   fi
+    echo $currenttime
 
   sleep 500s
 done
