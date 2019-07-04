@@ -26,6 +26,7 @@ print_usage() {
   echo "    [-d]: NEEDED   : daytime wallpaper file/folder"
   echo "    [-n]: NEEDED   : nighttime wallpaper file/folder"
   echo "    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)"
+  echo "    [-t]: OPTIONAL : set the time period for the script to check if it is day or night "
   echo "    [-h]: OPTIONAL : print help message"
 }
 
@@ -66,10 +67,11 @@ if (( $# == 0 )); then
     exit 1
 fi
 
-while getopts 'd:n:l:h' flag; do
+while getopts 'd:n:l:t:h' flag; do
   case "${flag}" in
     d) input_daytimewallpaper="${OPTARG}"    ;;
     n) input_nighttimewallpaper="${OPTARG}"  ;;
+    t) period="${OPTARG}"                    ;;
     l) location="${OPTARG}"                  ;;
     h) print_usage
        exit 0                                ;;
