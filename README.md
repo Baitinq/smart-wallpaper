@@ -21,7 +21,7 @@ Usage: smart-wallpaper [FLAG]<br />
     [-d]: NEEDED   : daytime wallpaper file/folder<br />
     [-n]: NEEDED   : nighttime wallpaper file/folder<br />
     [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)<br />
-    [-t]: OPTIONAL : set the time period for the script to check if it is day or night<br />
+    [-t]: OPTIONAL : set the time period (seconds) for the script to check if it is day or night<br />
     [-h]: OPTIONAL : print help message
 
 Example:
