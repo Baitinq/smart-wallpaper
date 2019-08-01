@@ -98,9 +98,7 @@ do
 
   checktime
 
-  if [ $timebool == true ]; then
-     :
-  else
+  if [ $timebool == false ]; then
     if [ "$location" != "" ]; then
       if redshift -l $location -p | grep -i -q "day"; then
         currenttime="day"
