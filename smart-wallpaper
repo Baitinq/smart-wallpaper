@@ -3,6 +3,7 @@
 trap cleanup EXIT
 
 period=500
+resolution=$(xdpyinfo | awk '/dimensions/{print $2}')
 
 input_daytimewallpaper=''
 input_nighttimewallpaper=''
@@ -37,7 +38,7 @@ set_wallpaper() {
   fi
 
   if [[ $1 == *".gif" ]] && [ -f /usr/bin/gifview ]; then
-    gifview --animate -w root $1 &
+    gifsicle --resize $resolution $1 | gifview --animate -w root &
     procid=$!
   else
     feh --bg-fill $1
