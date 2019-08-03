@@ -5,6 +5,7 @@ trap cleanup EXIT
 period=500
 resolution=$(xdpyinfo | awk '/dimensions/{print $2}')
 
+randomize=false
 input_daytimewallpaper=''
 input_nighttimewallpaper=''
 daytimewallpaper=''
@@ -28,6 +29,7 @@ print_usage() {
   echo "    [-n]: NEEDED   : nighttime wallpaper file/folder"
   echo "    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)"
   echo "    [-t]: OPTIONAL : set the time period (seconds) for the script to check if it is day or night "
+  echo "    [-r]: OPTIONAL : changes the wallpaper every day/night iteration"
   echo "    [-h]: OPTIONAL : print help message"
 }
 
@@ -52,12 +54,20 @@ checktime() {
     if redshift -l $location -p | grep -i -q "$currenttime"; then
       timebool=true
     else
+      if [ "$randomize" == true ]; then
+        daytimewallpaper=$(find $input_daytimewallpaper -type f | shuf -n 1)
+        nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
+      fi
       timebool=false
     fi
   else
     if redshift -p | grep -i -q "$currenttime"; then
       timebool=true
     else
+      if [ "$randomize" == true ]; then
+        daytimewallpaper=$(find $input_daytimewallpaper -type f | shuf -n 1)
+        nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
+      fi
       timebool=false
     fi
   fi
@@ -68,12 +78,13 @@ if (( $# == 0 )); then
     exit 1
 fi
 
-while getopts 'd:n:l:t:h' flag; do
+while getopts 'd:n:l:t:rh' flag; do
   case "${flag}" in
     d) input_daytimewallpaper="${OPTARG}"    ;;
     n) input_nighttimewallpaper="${OPTARG}"  ;;
     t) period="${OPTARG}"                    ;;
     l) location="${OPTARG}"                  ;;
+    r) randomize=true                      ;;
     h) print_usage
        exit 0                                ;;
     *) print_usage
@@ -91,8 +102,10 @@ if [ "$input_nighttimewallpaper" == "" ]; then
   exit 1
 fi
 
-daytimewallpaper=$(find $input_daytimewallpaper -type f | shuf -n 1)
-nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
+if [ "$randomize" == false ]; then
+  daytimewallpaper=$(find $input_daytimewallpaper -type f | shuf -n 1)
+  nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
+fi
 
 while true
 do
