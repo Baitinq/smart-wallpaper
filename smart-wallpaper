@@ -20,6 +20,7 @@ cleanup() {
   if [[ $procid != '' ]]; then
     kill $procid
   fi
+  xsetroot -solid black
 }
 
 print_usage() {
@@ -39,12 +40,29 @@ set_wallpaper() {
     kill $procid
   fi
 
-  if [[ $1 == *".gif" ]] && [ -f /usr/bin/gifview ]; then
-    gifsicle --resize $resolution $1 | gifview --animate -w root &
-    procid=$!
+  if [ -f /usr/bin/xwinwrap ]; then
+    if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
+      echo "gifsicle --resize $resolution \$1 | gifview --animate -w \$2" > /tmp/smart-wallpaper-gifcmd
+      xwinwrap -ov -ni -g $resolution -- sh /tmp/smart-wallpaper-gifcmd $1 WID &
+      procid=$!
+    elif [ -f /usr/bin/mpv ] && [[ $1 == *".mp4" ]] || [[ $1 == *".mov" ]] || [[ $1 == *".avi" ]] || [[ $1 == *".wav" ]]; then
+      xwinwrap -ni -ov -g $resolution -- mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid WID --quiet $1 &
+      procid=$!
+    else
+      feh --bg-fill $1
+      procid=''
+    fi
   else
-    feh --bg-fill $1
-    procid=''
+    if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
+      gifsicle --resize $resolution $1 | gifview --animate -w root &
+      procid=$!
+    elif [ -f /usr/bin/mpv] && [[ $1 == *".mp4" ]] || [[ $1 == *".mov" ]] || [[ $1 == *".avi" ]] || [[ $1 == *".wav" ]]; then
+      mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid 0 --quiet $1 &
+      procid=$!
+    else
+      feh --bg-fill $1
+      procid=''
+    fi
   fi
 
 }
