@@ -17,9 +17,10 @@ timebool=false
 procid=''
 
 cleanup() {
-  if [[ $procid != '' ]]; then
-    kill $procid
-  fi
+  #if [[ $procid != '' ]]; then
+  #  kill $procid
+  #fi
+  killall gifview
   xsetroot -solid black
 }
 
@@ -36,9 +37,11 @@ print_usage() {
 
 set_wallpaper() {
 
-  if [[ $procid != '' ]]; then
-    kill $procid
-  fi
+  #if [[ $procid != '' ]]; then
+  #  kill $procid
+  #fi
+
+  killall gifview
 
   if [ -f /usr/bin/xwinwrap ]; then
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
