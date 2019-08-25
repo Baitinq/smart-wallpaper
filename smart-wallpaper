@@ -52,7 +52,7 @@ set_wallpaper() {
       xwinwrap -ni -ov -ni -s -nf -un -argb -g $resolution -- mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid WID --quiet $1 &
       procid=$!
     else
-      feh --bg-fill $1
+      feh --no-fehbg --bg-fill $1
       procid=''
     fi
   else
@@ -63,7 +63,7 @@ set_wallpaper() {
       mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid 0 --quiet $1 &
       procid=$!
     else
-      feh --bg-fill $1
+      feh --no-fehbg --bg-fill $1
       procid=''
     fi
   fi
