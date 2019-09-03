@@ -6,6 +6,7 @@ period=500
 resolution=$(xdpyinfo | awk '/dimensions/{print $2}')
 
 randomize=false
+optimize=false
 input_daytimewallpaper=''
 input_nighttimewallpaper=''
 daytimewallpaper=''
@@ -14,13 +15,18 @@ location=''
 
 currenttime='pn5Lf1f8SH' #random string so the first loop works
 timebool=false
+fullscreen=false
 procid=''
+fullscreencheck_process=''
 
 cleanup() {
-  #if [[ $procid != '' ]]; then
-  #  kill $procid
-  #fi
-  killall gifview
+  if [[ $fullscreencheck_process != '' ]]; then
+    kill $fullscreencheck_process
+  fi
+  if [[ $procid != '' ]]; then
+    kill $procid
+  fi
+  killall gifview #TODO: gotta kill mpv as well (but not all)
   xsetroot -solid black
 }
 
@@ -32,7 +38,37 @@ print_usage() {
   echo "    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)"
   echo "    [-t]: OPTIONAL : set the time period (seconds) for the script to check if it is day or night "
   echo "    [-r]: OPTIONAL : changes the wallpaper every day/night iteration"
+  echo "    [-o]: OPTIONAL : [BETA] checks weather you are in fullscreen to stop the wallpaper (less cpu power)"
   echo "    [-h]: OPTIONAL : print help message"
+}
+
+checkfullscreen(){	
+	WINDOW=$(echo $(xwininfo -id $(xdotool getactivewindow) -stats | \
+        egrep '(Width|Height):' | \
+        awk '{print $NF}') | \
+        sed -e 's/ /x/')
+	SCREEN=$(xdpyinfo | grep -m1 dimensions | awk '{print $2}')
+	if [ "$WINDOW" = "$SCREEN" ]; then
+                if [ "$fullscreen" == false ]; then
+			sleep 10
+			if [ "$WINDOW" = "$SCREEN" ]; then
+                		killall gifview
+				#pause shit
+			fi
+
+		fi
+                
+		fullscreen=true
+        else
+                if [ "$fullscreen" == true ]; then
+			drawwallpaper
+			#resume shit
+                fi
+                
+		fullscreen=false
+        fi
+
+	#detect screen change. If now false then restore wallpaper (instead of killing it every time if true). If now true then kill mpv and gifiew (mpv not yet, gotta figure out). This could all be done if an optimze flag is added.
 }
 
 set_wallpaper() {
@@ -70,6 +106,28 @@ set_wallpaper() {
 
 }
 
+drawwallpaper(){
+  if [ $timebool == false ]; then
+    if [ "$location" != "" ]; then
+      if redshift -l $location -p | grep -i -q "day"; then
+        currenttime="day"
+        set_wallpaper "$daytimewallpaper"
+      else
+        currenttime="night"
+        set_wallpaper "$nighttimewallpaper"
+      fi
+    else
+      if redshift -p | grep -i -q "day"; then
+        currenttime="day"
+        set_wallpaper "$daytimewallpaper"
+      else
+        currenttime="night"
+        set_wallpaper "$nighttimewallpaper"
+      fi
+    fi
+  fi
+}
+
 checktime() {
   if [ "$location" != "" ]; then
     if redshift -l $location -p | grep -i -q "$currenttime"; then
@@ -99,13 +157,14 @@ if (( $# == 0 )); then
     exit 1
 fi
 
-while getopts 'd:n:l:t:rh' flag; do
+while getopts 'd:n:l:t:roh' flag; do
   case "${flag}" in
     d) input_daytimewallpaper="${OPTARG}"    ;;
     n) input_nighttimewallpaper="${OPTARG}"  ;;
     t) period="${OPTARG}"                    ;;
     l) location="${OPTARG}"                  ;;
-    r) randomize=true                      ;;
+    r) randomize=true                        ;;
+    o) optimize=true                         ;;
     h) print_usage
        exit 0                                ;;
     *) print_usage
@@ -128,30 +187,26 @@ if [ "$randomize" == false ]; then
   nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
 fi
 
+if [ "$optimize" == true ]; then
+	while true
+	do
+   		checktime
+		
+		checkfullscreen
+
+   		sleep 10
+
+	done &
+	fullscreencheck_process=$!
+fi
+
 while true
 do
 
   checktime
 
-  if [ $timebool == false ]; then
-    if [ "$location" != "" ]; then
-      if redshift -l $location -p | grep -i -q "day"; then
-        currenttime="day"
-        set_wallpaper "$daytimewallpaper"
-      else
-        currenttime="night"
-        set_wallpaper "$nighttimewallpaper"
-      fi
-    else
-      if redshift -p | grep -i -q "day"; then
-        currenttime="day"
-        set_wallpaper "$daytimewallpaper"
-      else
-        currenttime="night"
-        set_wallpaper "$nighttimewallpaper"
-      fi
-    fi
-  fi
+  drawwallpaper
 
   sleep $period
+
 done
