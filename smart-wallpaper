@@ -21,13 +21,10 @@ procid=''
 fullscreencheck_process=''
 
 cleanup() {
-  if [[ $fullscreencheck_process != '' ]]; then
-    kill $fullscreencheck_process
-  fi
   if [[ $procid != '' ]]; then
     kill $procid
   fi
-  killall gifview #TODO: gotta kill mpv as well (but not all)
+  killall gifview #TODO: gotta kill mpv as well (but not all instances) HELP NEEDED
   xsetroot -solid black
 }
 
@@ -39,45 +36,16 @@ print_usage() {
   echo "    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)"
   echo "    [-t]: OPTIONAL : set the time period (seconds) for the script to check if it is day or night "
   echo "    [-r]: OPTIONAL : changes the wallpaper every day/night iteration"
-  echo "    [-o]: OPTIONAL : [BETA] checks weather you are in fullscreen to stop the wallpaper (less cpu power)"
   echo "    [-h]: OPTIONAL : print help message"
-}
-
-checkfullscreen(){	
-	WINDOW=$(echo $(xwininfo -id $(xdotool getactivewindow) -stats | \
-        egrep '(Width|Height):' | \
-        awk '{print $NF}') | \
-        sed -e 's/ /x/')
-	SCREEN=$(xdpyinfo | grep -m1 dimensions | awk '{print $2}')
-	if [ "$WINDOW" = "$SCREEN" ]; then
-                if [ "$fullscreen" == false ]; then
-			sleep 10
-			if [ "$WINDOW" = "$SCREEN" ]; then
-                		feh --bg-scale $currentwallpaper
-			fi
-
-		fi
-                
-		fullscreen=true
-        else
-                if [ "$fullscreen" == true ]; then
-			checktime
-			drawwallpaper #resume shit
-                fi
-                
-		fullscreen=false
-        fi
-
-	#detect screen change. If now false then restore wallpaper (instead of killing it every time if true). If now true then kill mpv and gifiew (mpv not yet, gotta figure out). This could all be done if an optimze flag is added.
 }
 
 set_wallpaper() {
 
-  #if [[ $procid != '' ]]; then
-  #  kill $procid
-  #fi
+  if [[ $procid != '' ]]; then
+    kill $procid
+  fi
 
-  killall gifview
+  killall gifview #TODO: gotta kill mpv as well (but not all instances) HELP NEEDED
 
   if [ -f /usr/bin/xwinwrap ]; then
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
@@ -191,17 +159,6 @@ if [ "$randomize" == false ]; then
   nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
 fi
 
-if [ "$optimize" == true ] && [ [ "$currentwallpaper" == *".gif" ] || [ "$currentwallpaper" == *".mp4" ] || [ "$currentwallpaper" == *".mov" ] || [ "$currentwallpaper" == *".avi" ] || [ "$currentwallpaper" == *".wav" ] ]; then
-	while true
-	do
-		
-		checkfullscreen
-
-   		sleep 10
-
-	done &
-	fullscreencheck_process=$!
-fi
 
 while true
 do
