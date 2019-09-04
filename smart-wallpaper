@@ -53,7 +53,7 @@ checkfullscreen(){
                 if [ "$fullscreen" == false ]; then
 			sleep 10
 			if [ "$WINDOW" = "$SCREEN" ]; then
-                		killall gifview #pause shit
+                		feh --bg-scale $currentwallpaper
 			fi
 
 		fi
