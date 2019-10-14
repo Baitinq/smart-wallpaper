@@ -24,12 +24,11 @@ Usage: smart-wallpaper [FLAG]<br />
     [-t]: OPTIONAL : set the time period (seconds) for the script to check if it is day or night<br />
     [-f]: OPTIONAL : set the framerate for the gif. Lower framerates = lower CPU usage.<br \>
     [-r]: OPTIONAL : changes the wallpaper every day/night iteration<br />
-    [-o]: OPTIONAL : [BETA] checks weather you are in fullscreen to stop the wallpaper (less cpu power)<br />
     [-h]: OPTIONAL : print help message
 
 Example:
 ```
-smart-wallpaper -d /home/user/Wallpapers/DayWallpaperFolder -n /home/user/Wallpapers/NightWallpaperFolder -l 0:0
+smart-wallpaper -d /home/user/Wallpapers/DayWallpaperFolder -n /home/user/Wallpapers/NightWallpaperFolder -l 0:0 -f 15
 ```
 
 ## Contributing
