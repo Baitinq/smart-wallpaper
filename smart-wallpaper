@@ -5,6 +5,8 @@ trap cleanup EXIT
 period=500
 resolution=$(xdpyinfo | awk '/dimensions/{print $2}')
 
+framerate=''
+delay_flag=''
 randomize=false
 optimize=false
 input_daytimewallpaper=''
@@ -35,6 +37,7 @@ print_usage() {
   echo "    [-n]: NEEDED   : nighttime wallpaper file/folder"
   echo "    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)"
   echo "    [-t]: OPTIONAL : set the time period (seconds) for the script to check if it is day or night "
+  echo "    [-f]: OPTIONAL : set the framerate for the gif. Lower framerates = lower CPU usage."
   echo "    [-r]: OPTIONAL : changes the wallpaper every day/night iteration"
   echo "    [-h]: OPTIONAL : print help message"
 }
@@ -49,7 +52,7 @@ set_wallpaper() {
 
   if [ -f /usr/bin/xwinwrap ]; then
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
-      echo "gifsicle --resize $resolution \$1 | gifview --animate -w \$2" > /tmp/smart-wallpaper-gifcmd
+      echo "gifsicle --resize $resolution $delay_flag \$1 | gifview --animate -w \$2" > /tmp/smart-wallpaper-gifcmd
       xwinwrap -ov -ni -s -nf -un -argb -g $resolution -- sh /tmp/smart-wallpaper-gifcmd $1 WID &
       procid=$!
     elif [ -f /usr/bin/mpv ] && [[ $1 == *".mp4" ]] || [[ $1 == *".mov" ]] || [[ $1 == *".avi" ]] || [[ $1 == *".mkv" ]]; then
@@ -61,7 +64,7 @@ set_wallpaper() {
     fi
   else
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
-      gifsicle --resize $resolution $1 | gifview --animate -w root &
+      gifsicle --resize $resolution $1 $delay_flag | gifview --animate -w root &
       procid=$!
     elif [ -f /usr/bin/mpv ] && [[ $1 == *".mp4" ]] || [[ $1 == *".mov" ]] || [[ $1 == *".avi" ]] || [[ $1 == *".mkv" ]]; then
       mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid 0 --quiet $1 &
@@ -129,11 +132,12 @@ if (( $# == 0 )); then
     exit 1
 fi
 
-while getopts 'd:n:l:t:roh' flag; do
+while getopts 'd:n:l:t:f:roh' flag; do
   case "${flag}" in
     d) input_daytimewallpaper="${OPTARG}"    ;;
     n) input_nighttimewallpaper="${OPTARG}"  ;;
     t) period="${OPTARG}"                    ;;
+	f) framerate="${OPTARG}"                 ;;
     l) location="${OPTARG}"                  ;;
     r) randomize=true                        ;;
     o) optimize=true                         ;;
@@ -159,6 +163,7 @@ if [ "$randomize" == false ]; then
   nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
 fi
 
+delay_flag="--delay $(expr 100 / $framerate)"
 
 while true
 do
