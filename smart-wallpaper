@@ -31,15 +31,15 @@ cleanup() {
 }
 
 print_usage() {
-  echo "Usage: smart-wallpaper [FLAG]"
-  echo "  Flags:"
-  echo "    [-d]: NEEDED   : daytime wallpaper file/folder"
-  echo "    [-n]: NEEDED   : nighttime wallpaper file/folder"
-  echo "    [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)"
-  echo "    [-t]: OPTIONAL : set the time period (seconds) for the script to check if it is day or night "
-  echo "    [-f]: OPTIONAL : set the framerate for the gif. Lower framerates = lower CPU usage."
-  echo "    [-r]: OPTIONAL : changes the wallpaper every day/night iteration"
-  echo "    [-h]: OPTIONAL : print help message"
+  echo "Usage: smart-wallpaper [FLAG]
+    Flags:
+      [-d]: NEEDED   : daytime wallpaper file/folder
+      [-n]: NEEDED   : nighttime wallpaper file/folder
+      [-l]: OPTIONAL : manual location (lat:long), if not added geoclue gets the location (requires internet)
+      [-t]: OPTIONAL : set the time period (seconds) for the script to check if it is day or night
+      [-f]: OPTIONAL : set the framerate for the gif. Lower framerates = lower CPU usage.
+      [-r]: OPTIONAL : changes the wallpaper every day/night iteration
+      [-h]: OPTIONAL : print help message"
 }
 
 set_wallpaper() {
@@ -163,7 +163,9 @@ if [ "$randomize" == false ]; then
   nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
 fi
 
-delay_flag="--delay $(expr 100 / $framerate)"
+if [[ -z $framerate ]]; then
+	delay_flag="--delay $(expr 100 / $framerate)"
+fi
 
 while true
 do
