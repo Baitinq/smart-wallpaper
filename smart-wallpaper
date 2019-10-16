@@ -163,7 +163,7 @@ if [ "$randomize" == false ]; then
   nighttimewallpaper=$(find $input_nighttimewallpaper -type f | shuf -n 1)
 fi
 
-if [[ -z $framerate ]]; then
+if [[ ! $framerate = '' ]]; then
 	delay_flag="--delay $(expr 100 / $framerate)"
 fi
 
