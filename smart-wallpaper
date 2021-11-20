@@ -27,6 +27,7 @@ cleanup() {
     kill $procid
   fi
   killall gifview #TODO: gotta kill mpv as well (but not all instances) HELP NEEDED
+  killall display
   xsetroot -solid black
 }
 
@@ -48,6 +49,7 @@ set_wallpaper() {
     kill $procid
   fi
 
+  killall display
   killall gifview #TODO: gotta kill mpv as well (but not all instances) HELP NEEDED
 
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
@@ -58,8 +60,7 @@ set_wallpaper() {
       nice xwinwrap -ni -ov -ni -s -nf -un -argb -g $resolution -- nice mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid WID --quiet $1 &
       procid=$!
     else
-      echo $1 > /tmp/smart-wallpaper-current-image    
-      nice xwinwrap -fs -st -sp -nf -ov -s -r -debug -- nice sh -c 'display -window $0 $(cat /tmp/smart-wallpaper-current-image);sleep infinity' WID &
+      nice xwinwrap -fs -st -sp -nf -ov -s -r -debug -- nice sh -c 'display -flatten -window $0 -resize '$resolution' '$1';sleep infinity' WID &
       procid=$!
     fi
 
