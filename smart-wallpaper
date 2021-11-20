@@ -50,7 +50,6 @@ set_wallpaper() {
 
   killall gifview #TODO: gotta kill mpv as well (but not all instances) HELP NEEDED
 
-  if [ -f /usr/bin/xwinwrap ]; then
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
       echo "gifsicle --resize $resolution $delay_flag \$1 | gifview --animate -w \$2" > /tmp/smart-wallpaper-gifcmd
       nice xwinwrap -ov -ni -s -nf -un -argb -g $resolution -- nice sh /tmp/smart-wallpaper-gifcmd $1 WID &
@@ -59,21 +58,10 @@ set_wallpaper() {
       nice xwinwrap -ni -ov -ni -s -nf -un -argb -g $resolution -- nice mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid WID --quiet $1 &
       procid=$!
     else
-      feh --no-fehbg --bg-fill $1
-      procid=''
-    fi
-  else
-    if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
-      nice gifsicle --resize $resolution $1 $delay_flag | nice gifview --animate -w root &
+      echo $1 > /tmp/smart-wallpaper-current-image    
+      nice xwinwrap -fs -st -sp -nf -ov -s -r -debug -- nice sh -c 'display -window $0 $(cat /tmp/smart-wallpaper-current-image);sleep infinity' WID &
       procid=$!
-    elif [ -f /usr/bin/mpv ] && [[ $1 == *".mp4" ]] || [[ $1 == *".mov" ]] || [[ $1 == *".avi" ]] || [[ $1 == *".mkv" ]]; then
-      nice mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid 0 --quiet $1 &
-      procid=$!
-    else
-      feh --no-fehbg --bg-fill $1
-      procid=''
     fi
-  fi
 
 }
 

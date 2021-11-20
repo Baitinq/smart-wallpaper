@@ -9,7 +9,8 @@ You can either clone the repository and run the script or if you are running Arc
 ### Dependencies
 
 Required: redshift - determining if its day/night in your location.
-          feh - setting the wallpaper.
+          imagemagick - setting the wallpaper.
+          xwinwrap - drawing on top of the Xorg root
           bash
 
 Optional: gifsicle - animated wallpaper support
