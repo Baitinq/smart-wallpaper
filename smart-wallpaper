@@ -53,10 +53,10 @@ set_wallpaper() {
   if [ -f /usr/bin/xwinwrap ]; then
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
       echo "gifsicle --resize $resolution $delay_flag \$1 | gifview --animate -w \$2" > /tmp/smart-wallpaper-gifcmd
-      xwinwrap -ov -ni -s -nf -un -argb -g $resolution -- sh /tmp/smart-wallpaper-gifcmd $1 WID &
+      nice xwinwrap -ov -ni -s -nf -un -argb -g $resolution -- nice sh /tmp/smart-wallpaper-gifcmd $1 WID &
       procid=$!
     elif [ -f /usr/bin/mpv ] && [[ $1 == *".mp4" ]] || [[ $1 == *".mov" ]] || [[ $1 == *".avi" ]] || [[ $1 == *".mkv" ]]; then
-      xwinwrap -ni -ov -ni -s -nf -un -argb -g $resolution -- mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid WID --quiet $1 &
+      nice xwinwrap -ni -ov -ni -s -nf -un -argb -g $resolution -- nice mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid WID --quiet $1 &
       procid=$!
     else
       feh --no-fehbg --bg-fill $1
@@ -64,10 +64,10 @@ set_wallpaper() {
     fi
   else
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
-      gifsicle --resize $resolution $1 $delay_flag | gifview --animate -w root &
+      nice gifsicle --resize $resolution $1 $delay_flag | nice gifview --animate -w root &
       procid=$!
     elif [ -f /usr/bin/mpv ] && [[ $1 == *".mp4" ]] || [[ $1 == *".mov" ]] || [[ $1 == *".avi" ]] || [[ $1 == *".mkv" ]]; then
-      mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid 0 --quiet $1 &
+      nice mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid 0 --quiet $1 &
       procid=$!
     else
       feh --no-fehbg --bg-fill $1
