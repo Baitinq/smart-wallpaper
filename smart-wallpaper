@@ -53,10 +53,10 @@ set_wallpaper() {
 
     if [ -f /usr/bin/gifview ] && [[ $1 == *".gif" ]]; then
       echo "gifsicle --resize $resolution $delay_flag \$1 | gifview --animate -w \$2" > /tmp/smart-wallpaper-gifcmd
-      nice xwinwrap -ov -ni -s -nf -un -argb -g $resolution -- nice sh /tmp/smart-wallpaper-gifcmd $1 WID &
+      nice xwinwrap -ov -ni -s -nf -un -argb -r -g $resolution -- nice sh /tmp/smart-wallpaper-gifcmd $1 WID &
       procid=$!
     elif [ -f /usr/bin/mpv ] && [[ $1 == *".mp4" ]] || [[ $1 == *".mov" ]] || [[ $1 == *".avi" ]] || [[ $1 == *".mkv" ]]; then
-      nice xwinwrap -ni -ov -ni -s -nf -un -argb -g $resolution -- nice mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid WID --quiet $1 &
+      nice xwinwrap -ni -ov -ni -s -nf -un -argb -r -g $resolution -- nice mpv --fullscreen --on-all-workspaces --no-config --no-input-default-bindings --no-stop-screensaver --loop-file --no-audio --no-osc --no-osd-bar -wid WID --quiet $1 &
       procid=$!
     else
       nice xwinwrap -ni -fs -st -sp -nf -ov -s -r -debug -- feh --window-id WID -F --zoom fill -g $resolution $1
