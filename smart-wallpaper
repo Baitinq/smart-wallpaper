@@ -43,11 +43,14 @@ print_usage() {
 }
 
 set_wallpaper() {
-
   if [[ $procid != '' ]]; then
     kill $procid
   fi
 
+  if [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
+     swaybg -i $1 &
+     procid=$!
+  else
   killall xwinwrap
   killall gifview #TODO: gotta kill mpv as well (but not all instances) HELP NEEDED
 
@@ -62,7 +65,7 @@ set_wallpaper() {
       nice xwinwrap -ni -fs -st -sp -nf -ov -s -r -debug -- feh --window-id WID -F --zoom fill -g $resolution $1
       procid=$!
     fi
-
+    fi
 }
 
 drawwallpaper(){
